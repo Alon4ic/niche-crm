@@ -226,7 +226,7 @@ export class DealsService {
         throw new ConflictException({ code: 'ALREADY_RESERVED', message: 'Stock is already reserved for this deal' });
       }
 
-      const bomItems = await this.prisma.dealBomItem.findMany({
+      const bomItems = await tx.dealBomItem.findMany({
         where: { dealId },
       });
 

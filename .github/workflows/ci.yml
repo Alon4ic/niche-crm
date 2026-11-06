@@ -33,7 +33,7 @@ jobs:
     # добавьте их сюда по образцу вашего .env.test.
     env:
       NODE_ENV: test
-      DATABASE_URL: postgresql://crm_user:ci_password@localhost:5432/niche_crm_test?schema=public
+      DATABASE_URL: postgresql://crm_user:ci_password@localhost:5432/niche_crm_test?schema=public&connection_limit=20&pool_timeout=20
       JWT_ACCESS_SECRET: ci-test-secret-ci-test-secret-ci-test-1234
       CORS_ORIGINS: http://localhost:5173
  
