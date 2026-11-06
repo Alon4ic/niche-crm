@@ -1,0 +1,270 @@
+{
+  "common": {
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "save": "Salva modifiche",
+    "create": "Crea",
+    "cancel": "Annulla",
+    "logout": "Esci",
+    "loading": "Caricamento...",
+    "noData": "Ancora nessun dato.",
+    "name": "Nome",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Telefono",
+    "notes": "Note",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "confirmDelete": {
+      "title": "Sei sicuro?",
+      "message": "Questa azione non può essere annullata.",
+      "messageNamed": "Eliminare «{{name}}»? Questa azione non può essere annullata."
+    }
+  },
+  "nav": {
+    "deals": "Trattative",
+    "clients": "Clienti",
+    "contacts": "Contatti",
+    "stockItems": "Articoli di magazzino",
+    "analytics": "Analisi",
+    "team": "Team",
+    "importFromFile": "Importa da file",
+    "settings": "Impostazioni"
+  },
+  "header": { "language": "Lingua", "menu": "Menu" },
+  "auth": {
+    "login": {
+      "title": "Accedi",
+      "submit": "Accedi",
+      "placeholderPassword": "La tua password",
+      "noAccount": "Non hai un account?",
+      "registerLink": "Registrati",
+      "emailInvalid": "Inserisci un'email valida",
+      "passwordRequired": "La password è obbligatoria",
+      "invalidCredentials": "Email o password non validi"
+    },
+    "register": {
+      "title": "Crea il tuo workspace",
+      "companyName": "Nome azienda",
+      "companyNamePlaceholder": "Acme S.r.l.",
+      "passwordPlaceholder": "Almeno 8 caratteri",
+      "submit": "Crea account",
+      "haveAccount": "Hai già un account?",
+      "loginLink": "Accedi",
+      "emailInvalid": "Inserisci un'email valida",
+      "passwordMin": "La password deve contenere almeno 8 caratteri",
+      "companyNameRequired": "Il nome azienda è obbligatorio",
+      "genericError": "Impossibile creare l'account"
+    }
+  },
+  "clients": {
+    "title": "Clienti",
+    "addClient": "Aggiungi cliente",
+    "editClient": "Modifica cliente",
+    "industry": "Settore",
+    "nameRequired": "Il nome è obbligatorio",
+    "noClients": "Ancora nessun cliente.",
+    "hasDeals": "Questo cliente ha delle trattative e non può essere eliminato."
+  },
+  "contacts": {
+    "title": "Contatti",
+    "addContact": "Aggiungi contatto",
+    "editContact": "Modifica contatto",
+    "role": "Ruolo",
+    "roleTitle": "Titolo del ruolo",
+    "roleTitlePlaceholder": "Responsabile acquisti",
+    "client": "Cliente",
+    "contact": "Contatto",
+    "selectClient": "Seleziona un cliente",
+    "emailInvalid": "Email non valida",
+    "nameRequired": "Il nome è obbligatorio",
+    "fullName": "Nome e cognome"
+  },
+  "stockItems": {
+    "title": "Articoli di magazzino",
+    "addItem": "Aggiungi articolo",
+    "addStockItem": "Aggiungi articolo di magazzino",
+    "editItem": "Modifica articolo",
+    "sku": "SKU",
+    "unit": "Unità",
+    "unitPlaceholder": "pz, kg, m, ...",
+    "unitCost": "Costo unitario",
+    "quantityOnHand": "Giacenza",
+    "quantityReserved": "Riservato",
+    "quantityAvailable": "Quantità disponibile",
+    "skuRequired": "Lo SKU è obbligatorio",
+    "unitRequired": "L'unità è obbligatoria",
+    "costMin": "Deve essere 0 o superiore",
+    "skuExists": "Esiste già un articolo con questo SKU.",
+    "inUse": "Questo articolo è usato in trattative o prenotazioni e non può essere eliminato."
+  },
+  "deals": {
+    "title": "Trattative",
+    "newDeal": "Nuova trattativa",
+    "backToDeals": "← Torna alle trattative",
+    "value": "Valore",
+    "titleRequired": "Il titolo è obbligatorio",
+    "noDeals": "Ancora nessuna trattativa.",
+    "failedToLoad": "Impossibile caricare le trattative",
+    "createDeal": "Create deal",
+    "table": {
+      "title": "Titolo",
+      "client": "Cliente",
+      "stage": "Fase",
+      "value": "Valore"
+    },
+    "stages": {
+      "LEAD": "Lead",
+      "QUALIFIED": "Qualificato",
+      "PROPOSAL": "Proposta",
+      "NEGOTIATION": "Negoziazione",
+      "WON": "Vinta",
+      "LOST": "Persa"
+    },
+    "stageChange": {
+      "confirmWonTitle": "Chiudere la trattativa come vinta?",
+      "confirmWon": "Le scorte prenotate verranno scaricate dal magazzino. L'operazione non può essere annullata.",
+      "markWon": "Chiudi come vinta"
+    },
+    "bom": {
+      "title": "Distinta base",
+      "noComponents": "Nessun componente aggiunto.",
+      "item": "Articolo",
+      "quantity": "Quantità",
+      "unitCostFixed": "Costo unitario (fisso)",
+      "totalCost": "Costo totale",
+      "selectItem": "Seleziona un articolo",
+      "add": "Aggiungi",
+      "selectItemError": "Seleziona un articolo",
+      "quantityPositive": "La quantità deve essere positiva",
+      "locked": "La distinta base è bloccata finché le scorte sono prenotate. Annulla la prenotazione per modificarla.",
+      "lockedWon": "La distinta base di una trattativa vinta non può essere modificata.",
+      "available": "Disponibile in magazzino: {{count}}",
+      "shortage": "{{count}} mancanti"
+    },
+    "reservation": {
+      "title": "Prenotazione magazzino",
+      "success": "Magazzino prenotato con successo.",
+      "error": "Impossibile prenotare il magazzino — controlla le quantità disponibili.",
+      "action": "Prenota magazzino",
+      "reservedBadge": "Scorte prenotate",
+      "release": "Annulla prenotazione",
+      "confirmRelease": "Annullare la prenotazione per questa trattativa? Le quantità torneranno disponibili.",
+      "deducted": "Scorte scaricate dal magazzino",
+      "closedHint": "Riapri la trattativa per prenotare le scorte."
+    },
+    "quote": { "download": "Scarica preventivo PDF" },
+    "contactsSection": {
+      "title": "Contatti della trattativa",
+      "noContacts": "Nessun contatto collegato.",
+      "selectContact": "Seleziona un contatto di questo cliente",
+      "link": "Collega contatto",
+      "alreadyLinked": "Questo contatto è già collegato alla trattativa.",
+      "confirmUnlink": "Rimuovere «{{name}}» da questa trattativa? Il contatto stesso non verrà eliminato.",
+      "unlink": "Rimuovi"
+    },
+    "notFound": "Trattativa non trovata"
+  },
+  "users": {
+    "title": "Membri del team",
+    "invite": "Invita utente",
+    "inviteTitle": "Invita membro del team",
+    "role": "Ruolo",
+    "roles": {
+      "OWNER": "Proprietario",
+      "ADMIN": "Amministratore",
+      "MEMBER": "Membro"
+    },
+    "roleRequired": "Seleziona un ruolo",
+    "emailExists": "Esiste già un utente con questa email."
+  },
+  "analytics": {
+    "title": "Panoramica pipeline",
+    "totalDeals": "Trattative totali",
+    "won": "Vinte",
+    "lost": "Perse",
+    "winRate": "Tasso di successo",
+    "table": {
+      "stage": "Fase",
+      "deals": "Trattative",
+      "totalValue": "Valore totale",
+      "avgDays": "Giorni medi nella fase"
+    }
+  },
+  "imports": {
+    "title": "Importa articoli di magazzino",
+    "fileLabel": "File Excel o CSV",
+    "filePlaceholder": "Scegli un file",
+    "mapColumns": "Mappa colonne",
+    "rowsFound": "{{count}} righe trovate. Associa ogni campo a una colonna del file.",
+    "selectColumn": "Seleziona colonna",
+    "preview": "Anteprima (prime righe)",
+    "importRows": "Importa {{count}} righe",
+    "result": "Risultato importazione",
+    "imported": "{{count}} importate",
+    "failed": "{{count}} non riuscite",
+    "rowErrors": "Righe con errori",
+    "row": "Riga",
+    "error": "Errore"
+  },
+  "errors": {
+    "title": "Qualcosa è andato storto",
+    "badRequest": "I dati inseriti non sono validi.",
+    "sessionExpired": "La sessione è scaduta. Accedi di nuovo.",
+    "forbidden": "Non hai i permessi per questa azione.",
+    "notFound": "Elemento non trovato. Potrebbe essere stato eliminato.",
+    "conflict": "Questa azione è in conflitto con i dati esistenti.",
+    "server": "Errore del server. Riprova più tardi.",
+    "network": "Impossibile raggiungere il server. Controlla la connessione.",
+    "tooManyRequests": "Troppi tentativi. Attendi un minuto e riprova.",
+    "fileTooLarge": "Il file è troppo grande (massimo 5 MB).",
+    "codes": {
+      "ALREADY_RESERVED": "Le scorte di questa trattativa sono già prenotate.",
+      "DEAL_CLOSED": "Questa trattativa è chiusa. Riaprila per prenotare le scorte.",
+      "STAGE_NEEDS_RESERVATION": "Prenota le scorte prima di chiudere la trattativa come vinta.",
+      "WON_IS_FINAL": "Una trattativa vinta non può essere riaperta: le scorte sono già state scaricate.",
+      "BOM_LOCKED_RESERVED": "La distinta base è bloccata finché le scorte sono prenotate. Annulla prima la prenotazione.",
+      "BOM_LOCKED_WON": "La distinta base di una trattativa vinta non può essere modificata.",
+      "STOCK_CHANGED": "Le scorte a magazzino sono cambiate dopo la prenotazione, lo scarico non è possibile. Controlla le giacenze e prenota di nuovo.",
+      "RETURNS_DISABLED": "I resi sono disattivati nelle impostazioni aziendali.",
+      "RETURN_WINDOW_EXPIRED": "Il periodo di reso per questa trattativa è scaduto.",
+      "RETURN_NOT_WON": "I resi sono possibili solo per le trattative vinte.",
+      "NOTHING_TO_RETURN": "Tutto ciò che è stato consegnato in questa trattativa è già stato reso.",
+      "RETURN_EXCEEDS_DELIVERED": "La quantità supera quella ancora restituibile.",
+      "RETURN_ITEM_NOT_IN_DEAL": "Questo articolo non è stato consegnato in questa trattativa.",
+      "INSUFFICIENT_STOCK": "Non ci sono scorte sufficienti per prenotare questa trattativa.",
+      "STOCK_BELOW_RESERVED": "La giacenza non può essere inferiore alla quantità già prenotata."
+    }
+  },
+  "returns": {
+    "title": "Resi",
+    "windowInfo": "I resi sono accettati per {{days}} giorni dalla vittoria della trattativa, fino al {{date}}.",
+    "register": "Registra reso",
+    "modalTitle": "Registra reso",
+    "delivered": "Consegnato",
+    "returned": "Reso",
+    "returnable": "Restituibile",
+    "quantity": "Quantità",
+    "condition": "Condizione",
+    "restock": "Torna a magazzino",
+    "writeOff": "Danneggiato, da scartare",
+    "reason": "Motivo (facoltativo)",
+    "accept": "Accetta reso",
+    "registered": "Reso registrato.",
+    "history": "Storico resi",
+    "noReturns": "Nessun reso finora.",
+    "date": "Data",
+    "items": "Articoli",
+    "acceptedBy": "Accettato da",
+    "enterQuantity": "Inserisci una quantità per almeno un articolo.",
+    "loadFailed": "Impossibile caricare i resi per questa trattativa."
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "returnWindow": "Periodo di reso (giorni)",
+    "returnWindowHint": "Per quanti giorni dopo la vittoria di una trattativa la merce può essere resa. 0 disattiva i resi.",
+    "save": "Salva",
+    "saved": "Impostazioni salvate."
+  }
+}

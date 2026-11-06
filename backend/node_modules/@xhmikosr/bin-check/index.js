@@ -1,5 +1,5 @@
-import {execa, execaSync} from 'execa';
 import {isexe, sync as isexeSync} from 'isexe';
+import {x, xSync} from 'tinyexec';
 
 const binCheck = async (bin, args) => {
 	if (!Array.isArray(args)) {
@@ -11,9 +11,12 @@ const binCheck = async (bin, args) => {
 		throw new Error(`Couldn't execute the "${bin}" binary. Make sure it has the right permissions.`);
 	}
 
-	const result = await execa(bin, args, {reject: false});
-
-	return result.exitCode === 0;
+	try {
+		const result = await x(bin, args, {nodePath: false});
+		return result.exitCode === 0;
+	} catch {
+		return false;
+	}
 };
 
 binCheck.sync = (bin, args) => {
@@ -25,7 +28,11 @@ binCheck.sync = (bin, args) => {
 		throw new Error(`Couldn't execute the "${bin}" binary. Make sure it has the right permissions.`);
 	}
 
-	return execaSync(bin, args, {reject: false}).exitCode === 0;
+	try {
+		return xSync(bin, args, {nodePath: false}).exitCode === 0;
+	} catch {
+		return false;
+	}
 };
 
 export default binCheck;

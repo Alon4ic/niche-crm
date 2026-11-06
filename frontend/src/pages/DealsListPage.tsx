@@ -17,10 +17,10 @@ import {
   Select,
   Stack,
 } from "@mantine/core";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useDeals, useCreateDeal } from "../api/deals";
 import { useClients } from "../api/clients";
-import { useAuthStore } from "../stores/authStore";
+import { useTranslation } from "react-i18next";
 
 const STAGE_COLORS: Record<string, string> = {
   LEAD: "gray",
@@ -40,10 +40,10 @@ const createDealSchema = z.object({
 type CreateDealFormData = z.infer<typeof createDealSchema>;
 
 export function DealsListPage() {
+  const { t } = useTranslation();
   const { data: deals, isLoading, isError } = useDeals();
   const { data: clients } = useClients();
   const createDeal = useCreateDeal();
-  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,10 +58,6 @@ export function DealsListPage() {
     defaultValues: { value: 0 },
   });
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
 
   const onSubmit = async (data: CreateDealFormData) => {
     await createDeal.mutateAsync(data);
@@ -73,43 +69,43 @@ export function DealsListPage() {
   if (isError)
     return (
       <Text c="red" ta="center" mt="xl">
-        Failed to load deals
+        {t("failedToLoad")}
       </Text>
     );
   return (
     <Container mt="xl">
       <Group justify="space-between" mb="lg">
-        <Title order={2}>Deals</Title>
-        <Group>
-          <Button component={Link} to="/clients" variant="subtle">
-            Clients
+        <Title order={2}>{t("deals.title")}</Title>       
+          <Button onClick={() => setIsModalOpen(true)}>
+            {t("deals.newDeal")}
           </Button>
-          <Button onClick={() => setIsModalOpen(true)}>New deal</Button>
-          <Button variant="subtle" onClick={handleLogout}>
-            Log out
-          </Button>
-        </Group>
       </Group>
 
       {deals && deals.length === 0 ? (
-        <Text c="dimmed">No deals yet.</Text>
+        <Text c="dimmed">{t("deals.noDeals")}</Text>
       ) : (
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Title</Table.Th>
-              <Table.Th>Client</Table.Th>
-              <Table.Th>Stage</Table.Th>
-              <Table.Th>Value</Table.Th>
+              <Table.Th>{t("deals.table.title")}</Table.Th>
+              <Table.Th>{t("deals.table.client")}</Table.Th>
+              <Table.Th>{t("deals.table.stage")}</Table.Th>
+              <Table.Th>{t("deals.table.value")}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
             {deals?.map((deal) => (
-              <Table.Tr key={deal.id}>
+              <Table.Tr
+                key={deal.id}
+                onClick={() => navigate(`/deals/${deal.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <Table.Td>{deal.title}</Table.Td>
                 <Table.Td>{deal.client.name}</Table.Td>
                 <Table.Td>
-                  <Badge color={STAGE_COLORS[deal.stage]}>{deal.stage}</Badge>
+                  <Badge color={STAGE_COLORS[deal.stage]}>
+                    {t(`deals.stages.${deal.stage}`)}
+                  </Badge>
                 </Table.Td>
                 <Table.Td>
                   {deal.currency} {deal.value}
@@ -123,12 +119,12 @@ export function DealsListPage() {
       <Modal
         opened={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="New deal"
+        title={t("deals.newDeal")}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
             <TextInput
-              label="Title"
+              label={t("deals.table.title")}
               error={errors.title?.message}
               {...register("title")}
             />
@@ -138,7 +134,7 @@ export function DealsListPage() {
               control={control}
               render={({ field, fieldState }) => (
                 <Select
-                  label="Client"
+                  label={t("deals.table.client")}
                   data={
                     clients?.map((c) => ({ value: c.id, label: c.name })) ?? []
                   }
@@ -155,7 +151,7 @@ export function DealsListPage() {
               control={control}
               render={({ field, fieldState }) => (
                 <NumberInput
-                  label="Value"
+                  label={t("deals.table.value")}
                   min={0}
                   decimalScale={2}
                   value={field.value}
@@ -166,7 +162,7 @@ export function DealsListPage() {
             />
 
             <Button type="submit" loading={createDeal.isPending} fullWidth>
-              Create deal
+              {t("deals.createDeal")}
             </Button>
           </Stack>
         </form>

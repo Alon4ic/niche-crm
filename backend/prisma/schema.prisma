@@ -44,6 +44,15 @@ enum StockReservationStatus {
   FULFILLED
 }
 
+enum ImportEntityType {
+  STOCK_ITEM
+  CLIENT
+}
+
+enum ReturnDisposition {
+  RESTOCK
+  WRITE_OFF
+}
 // ────────────────────────────────
 // Tenant & Users
 // ────────────────────────────────
@@ -60,6 +69,9 @@ model Tenant {
   stockItems          StockItem[]
   importJobs          ImportJob[]
   importFieldMappings ImportFieldMapping[]
+
+  returnWindowDays  Int    @default(14)
+  dealReturns       DealReturn[]
 }
 
 model User {
@@ -77,6 +89,8 @@ model User {
 
   assignedDeals Deal[] @relation("AssignedUser")
   refreshTokens RefreshToken[]
+
+  dealReturns   DealReturn[]
 
   @@index([tenantId])
 }
@@ -134,7 +148,7 @@ model Deal {
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   clientId String
-  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client   Client @relation(fields: [clientId], references: [id], onDelete: NoAction)
 
   assignedUserId String?
   assignedUser   User?   @relation("AssignedUser", fields: [assignedUserId], references: [id], onDelete: SetNull)
@@ -143,6 +157,8 @@ model Deal {
   dealContacts      DealContact[]
   bomItems          DealBomItem[]
   stockReservations StockReservation[]
+
+  returns DealReturn[]
 
   @@index([tenantId])
   @@index([clientId])
@@ -197,6 +213,8 @@ model StockItem {
   dealBomItems      DealBomItem[]
   stockReservations StockReservation[]
 
+  returnItems       DealReturnItem[]
+
   @@unique([tenantId, sku])
   @@index([tenantId])
 }
@@ -245,12 +263,14 @@ model StockReservation {
 
 model ImportJob {
   id          String           @id @default(uuid())
+  entityType  ImportEntityType
   sourceType  ImportSourceType
   status      ImportStatus     @default(PENDING)
   fileName    String
   rowsTotal   Int              @default(0)
   rowsSuccess Int              @default(0)
   rowsFailed  Int              @default(0)
+  errors      Json?
   startedAt   DateTime?
   finishedAt  DateTime?
   createdAt   DateTime         @default(now())
@@ -264,13 +284,14 @@ model ImportJob {
 // Сохранённая настройка сопоставления колонок, чтобы не настраивать заново при каждой загрузке
 model ImportFieldMapping {
   id         String           @id @default(uuid())
+  entityType ImportEntityType
   sourceType ImportSourceType
   mapping    Json
 
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  @@unique([tenantId, sourceType])
+  @@unique([tenantId, entityType, sourceType])
 }
 
 model RefreshToken {
@@ -285,4 +306,43 @@ model RefreshToken {
 
   @@index([userId])
   @@index([tokenHash])
+}
+
+//------------------
+//История возвратов
+//__________________
+
+model DealReturn {
+  id        String   @id @default(uuid())
+  reason    String?
+  createdAt DateTime @default(now())
+
+  tenantId  String
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  dealId    String
+  deal      Deal @relation(fields: [dealId], references: [id], onDelete: NoAction)
+
+  createdById String?
+  createdBy User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  items   DealReturnItem[]
+
+  @@index([tenantId])
+  @@index([dealId])
+}
+
+model DealReturnItem {
+  id         String       @id  @default(uuid())
+  quantity   Decimal      @db.Decimal(12, 3)
+  disposition ReturnDisposition
+
+  dealReturnId String
+  dealReturn  DealReturn @relation(fields: [dealReturnId], references: [id], onDelete: Cascade)
+
+  stockItemId String
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id], onDelete: NoAction)
+
+  @@index([dealReturnId])
+  @@index([stockItemId])
 }

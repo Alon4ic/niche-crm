@@ -1,0 +1,271 @@
+{
+  "common": {
+    "add": "Hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "save": "Änderungen speichern",
+    "create": "Erstellen",
+    "cancel": "Abbrechen",
+    "logout": "Abmelden",
+    "loading": "Wird geladen...",
+    "noData": "Noch keine Daten.",
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "phone": "Telefon",
+    "notes": "Notizen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "confirmDelete": {
+      "title": "Sind Sie sicher?",
+      "message": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "messageNamed": "„{{name}}“ löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    }
+  },
+  "nav": {
+    "deals": "Deals",
+    "clients": "Kunden",
+    "contacts": "Kontakte",
+    "stockItems": "Lagerartikel",
+    "analytics": "Analytik",
+    "team": "Team",
+    "importFromFile": "Aus Datei importieren",
+    "settings": "Einstellungen"
+  },
+  "header": { "language": "Sprache", "menu": "Menü" },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "submit": "Anmelden",
+      "placeholderPassword": "Ihr passwort",
+      "noAccount": "Noch kein Konto?",
+      "registerLink": "Registrieren",
+      "emailInvalid": "Gültige E-Mail eingeben",
+      "passwordRequired": "Passwort ist erforderlich",
+      "invalidCredentials": "Ungültige E-Mail oder Passwort"
+    },
+    "register": {
+      "title": "Workspace erstellen",
+      "companyName": "Firmenname",
+      "companyNamePlaceholder": "Muster GmbH",
+      "passwordPlaceholder": "Mindestens 8 Zeichen",
+      "submit": "Konto erstellen",
+      "haveAccount": "Bereits ein Konto?",
+      "loginLink": "Anmelden",
+      "emailInvalid": "Gültige E-Mail eingeben",
+      "passwordMin": "Passwort muss mindestens 8 Zeichen lang sein",
+      "companyNameRequired": "Firmenname ist erforderlich",
+      "genericError": "Konto konnte nicht erstellt werden"
+    }
+  },
+  "clients": {
+    "title": "Kunden",
+    "addClient": "Kunde hinzufügen",
+    "editClient": "Kunde bearbeiten",
+    "industry": "Branche",
+    "nameRequired": "Name ist erforderlich",
+    "noClients": "Noch keine Kunden.",
+    "saveChanges": "Änderung speichern",
+    "hasDeals": "Dieser Kunde hat Deals und kann nicht gelöscht werden."
+  },
+  "contacts": {
+    "title": "Kontakte",
+    "addContact": "Kontakt hinzufügen",
+    "editContact": "Kontakt bearbeiten",
+    "role": "Position",
+    "roleTitle": "Rollenbezeichnung",
+    "roleTitlePlaceholder": "Einkaufsleiter",
+    "client": "Kunde",
+    "contact": "Kontakt",
+    "selectClient": "Kunde auswählen",
+    "emailInvalid": "Ungültige E-Mail",
+    "nameRequired": "Name ist erforderlich",
+    "fullName": "Vollständiger Name"
+  },
+  "stockItems": {
+    "title": "Lagerartikel",
+    "addItem": "Artikel hinzufügen",
+    "addStockItem": "Lagerartikel hinzufügen",
+    "editItem": "Lagerartikel bearbeiten",
+    "sku": "SKU",
+    "unit": "Einheit",
+    "unitPlaceholder": "Stk, kg, m, ...",
+    "unitCost": "Stückkosten",
+    "quantityOnHand": "Bestand",
+    "quantityReserved": "Reserviert",
+    "quantityAvailable": "Verfügbare menge",
+    "skuRequired": "SKU ist erforderlich",
+    "unitRequired": "Einheit ist erforderlich",
+    "costMin": "Muss 0 oder größer sein",
+    "skuExists": "Ein Artikel mit dieser Artikelnummer existiert bereits.",
+    "inUse": "Dieser Artikel wird in Deals oder Reservierungen verwendet und kann nicht gelöscht werden."
+  },
+  "deals": {
+    "title": "Deals",
+    "newDeal": "Neuer Deal",
+    "backToDeals": "← Zurück zu Deals",
+    "value": "Wert",
+    "titleRequired": "Titel ist erforderlich",
+    "noDeals": "Noch keine Deals.",
+    "failedToLoad": "Deals konnten nicht geladen werden",
+    "createDeal": "Deal erstellen",
+    "table": {
+      "title": "Titel",
+      "client": "Kunde",
+      "stage": "Phase",
+      "value": "Wert"
+    },
+    "stages": {
+      "LEAD": "Lead",
+      "QUALIFIED": "Qualifiziert",
+      "PROPOSAL": "Angebot",
+      "NEGOTIATION": "Verhandlung",
+      "WON": "Gewonnen",
+      "LOST": "Verloren"
+    },
+    "stageChange": {
+      "confirmWonTitle": "Deal als gewonnen abschließen?",
+      "confirmWon": "Der reservierte Bestand wird aus dem Lager ausgebucht. Das kann nicht rückgängig gemacht werden.",
+      "markWon": "Als gewonnen abschließen"
+    },
+    "bom": {
+      "title": "Stückliste",
+      "noComponents": "Noch keine Komponenten hinzugefügt.",
+      "item": "Artikel",
+      "quantity": "Menge",
+      "unitCostFixed": "Stückkosten (fixiert)",
+      "totalCost": "Gesamtkosten",
+      "selectItem": "Artikel auswählen",
+      "add": "Hinzufügen",
+      "selectItemError": "Artikel auswählen",
+      "quantityPositive": "Menge muss positiv sein",
+      "locked": "Die Stückliste ist gesperrt, solange Bestand reserviert ist. Heben Sie die Reservierung auf, um sie zu ändern.",
+      "lockedWon": "Die Stückliste eines gewonnenen Deals kann nicht geändert werden.",
+      "available": "Auf Lager: {{count}}",
+      "shortage": "Es fehlen {{count}}."
+    },
+    "reservation": {
+      "title": "Lagerreservierung",
+      "success": "Lager erfolgreich reserviert.",
+      "error": "Lager konnte nicht reserviert werden — verfügbare Mengen prüfen.",
+      "action": "Lager reservieren",
+      "reservedBadge": "Bestand reserviert",
+      "release": "Reservierung aufheben",
+      "confirmRelease": "Reservierung für diesen Deal aufheben? Die Mengen stehen danach wieder zur Verfügung.",
+      "deducted": "Bestand aus dem Lager ausgebucht",
+      "closedHint": "Öffnen Sie den Deal erneut, um Bestand zu reservieren."
+    },
+    "quote": { "download": "PDF-Angebot herunterladen" },
+    "contactsSection": {
+      "title": "Deal-Kontakte",
+      "noContacts": "Noch keine Kontakte verknüpft.",
+      "selectContact": "Kontakt dieses Kunden auswählen",
+      "link": "Kontakt verknüpfen",
+      "alreadyLinked": "Dieser Kontakt ist bereits mit dem Deal verknüpft.",
+      "confirmUnlink": "„{{name}}“ aus diesem Deal entfernen? Der Kontakt selbst wird nicht gelöscht.",
+      "unlink": "Entfernen"
+    },
+    "notFound": "Deal nicht gefunden"
+  },
+  "users": {
+    "title": "Teammitglieder",
+    "invite": "Benutzer einladen",
+    "inviteTitle": "Teammitglied einladen",
+    "role": "Rolle",
+    "roles": {
+      "OWNER": "Inhaber",
+      "ADMIN": "Administrator",
+      "MEMBER": "Mitglied"
+    },
+    "roleRequired": "Rolle auswählen",
+    "emailExists": "Ein Benutzer mit dieser E-Mail existiert bereits."
+  },
+  "analytics": {
+    "title": "Pipeline-Übersicht",
+    "totalDeals": "Deals insgesamt",
+    "won": "Gewonnen",
+    "lost": "Verloren",
+    "winRate": "Gewinnrate",
+    "table": {
+      "stage": "Phase",
+      "deals": "Deals",
+      "totalValue": "Gesamtwert",
+      "avgDays": "Ø Tage in Phase"
+    }
+  },
+  "imports": {
+    "title": "Lagerartikel importieren",
+    "fileLabel": "Excel- oder CSV-Datei",
+    "filePlaceholder": "Datei auswählen",
+    "mapColumns": "Spalten zuordnen",
+    "rowsFound": "{{count}} Zeilen gefunden. Ordnen Sie jedes Feld einer Spalte aus der Datei zu.",
+    "selectColumn": "Spalte auswählen",
+    "preview": "Vorschau (erste Zeilen)",
+    "importRows": "{{count}} Zeilen importieren",
+    "result": "Import-Ergebnis",
+    "imported": "{{count}} importiert",
+    "failed": "{{count}} fehlgeschlagen",
+    "rowErrors": "Zeilen mit Fehlern",
+    "row": "Zeile",
+    "error": "Fehler"
+  },
+  "errors": {
+    "title": "Etwas ist schiefgelaufen",
+    "badRequest": "Die eingegebenen Daten sind ungültig.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "forbidden": "Dazu fehlt Ihnen die Berechtigung.",
+    "notFound": "Eintrag nicht gefunden. Möglicherweise wurde er gelöscht.",
+    "conflict": "Diese Aktion steht im Konflikt mit vorhandenen Daten.",
+    "server": "Serverfehler. Bitte versuchen Sie es später erneut.",
+    "network": "Server nicht erreichbar. Prüfen Sie Ihre Verbindung.",
+    "tooManyRequests": "Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.",
+    "fileTooLarge": "Die Datei ist zu groß (maximal 5 MB).",
+    "codes": {
+      "ALREADY_RESERVED": "Für diesen Deal ist der Bestand bereits reserviert.",
+      "DEAL_CLOSED": "Dieser Deal ist abgeschlossen. Öffnen Sie ihn erneut, um Bestand zu reservieren.",
+      "STAGE_NEEDS_RESERVATION": "Reservieren Sie den Bestand, bevor Sie den Deal als gewonnen abschließen.",
+      "WON_IS_FINAL": "Ein gewonnener Deal kann nicht wieder geöffnet werden: Der Bestand wurde bereits ausgebucht.",
+      "BOM_LOCKED_RESERVED": "Die Stückliste ist gesperrt, solange Bestand reserviert ist. Heben Sie zuerst die Reservierung auf.",
+      "BOM_LOCKED_WON": "Die Stückliste eines gewonnenen Deals kann nicht geändert werden.",
+      "STOCK_CHANGED": "Der Lagerbestand hat sich seit der Reservierung geändert, die Ausbuchung ist nicht möglich. Prüfen Sie den Bestand und reservieren Sie erneut.",
+      "RETURNS_DISABLED": "Rückgaben sind in den Unternehmenseinstellungen deaktiviert.",
+      "RETURN_WINDOW_EXPIRED": "Die Rückgabefrist für diesen Deal ist abgelaufen.",
+      "RETURN_NOT_WON": "Rückgaben sind nur für gewonnene Deals möglich.",
+      "NOTHING_TO_RETURN": "Alles, was in diesem Deal geliefert wurde, wurde bereits zurückgegeben.",
+      "RETURN_EXCEEDS_DELIVERED": "Die Menge ist größer als die noch rückgebbare Menge.",
+      "RETURN_ITEM_NOT_IN_DEAL": "Dieser Artikel wurde in diesem Deal nicht geliefert.",
+      "INSUFFICIENT_STOCK": "Es ist nicht genug Bestand vorhanden, um diesen Deal zu reservieren.",
+      "STOCK_BELOW_RESERVED": "Der Bestand darf nicht unter der bereits reservierten Menge liegen."
+    }
+  },
+  "returns": {
+    "title": "Rückgaben",
+    "windowInfo": "Rückgaben werden {{days}} Tage nach Gewinn des Deals angenommen, bis {{date}}.",
+    "register": "Rückgabe erfassen",
+    "modalTitle": "Rückgabe erfassen",
+    "delivered": "Geliefert",
+    "returned": "Zurückgegeben",
+    "returnable": "Rückgebbar",
+    "quantity": "Menge",
+    "condition": "Zustand",
+    "restock": "Zurück ins Lager",
+    "writeOff": "Beschädigt, abschreiben",
+    "reason": "Grund (optional)",
+    "accept": "Rückgabe annehmen",
+    "registered": "Rückgabe erfasst.",
+    "history": "Rückgabehistorie",
+    "noReturns": "Noch keine Rückgaben.",
+    "date": "Datum",
+    "items": "Artikel",
+    "acceptedBy": "Angenommen von",
+    "enterQuantity": "Geben Sie für mindestens einen Artikel eine Menge ein.",
+    "loadFailed": "Rückgaben für diesen Deal konnten nicht geladen werden."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "returnWindow": "Rückgabefrist (Tage)",
+    "returnWindowHint": "Wie viele Tage nach Gewinn eines Deals Waren zurückgegeben werden können. 0 deaktiviert Rückgaben.",
+    "save": "Speichern",
+    "saved": "Einstellungen gespeichert."
+  }
+}

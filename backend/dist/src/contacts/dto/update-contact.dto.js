@@ -10,7 +10,9 @@ Object.defineProperty(exports, "UpdateContactDto", {
 });
 const _mappedtypes = require("@nestjs/mapped-types");
 const _createcontactdto = require("./create-contact.dto");
-let UpdateContactDto = class UpdateContactDto extends (0, _mappedtypes.PartialType)(_createcontactdto.CreateContactDto) {
+let UpdateContactDto = class UpdateContactDto extends (0, _mappedtypes.PartialType)((0, _mappedtypes.OmitType)(_createcontactdto.CreateContactDto, [
+    'clientId'
+])) {
 };
 
 //# sourceMappingURL=update-contact.dto.js.map

@@ -15,6 +15,12 @@ export interface CreateClientPayload {
   notes?: string;
 }
 
+export interface UpdateClientPayload {
+  name?: string;
+  industry?: string;
+  notes?: string;
+}
+
 export function useClients() {
   return useQuery({
     queryKey: ["clients"],
@@ -28,6 +34,28 @@ export function useCreateClient() {
   return useMutation({
     mutationFn: (payload: CreateClientPayload) =>
       apiClient.post<Client>("/clients", payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+export function useUpdateClient() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateClientPayload }) =>
+      apiClient.patch<Client>(`/clients/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+export function useDeleteClient() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiClient.delete(`/clients/${id}`),
+    meta: { conflictMessage: 'clients.hasDeals' }, 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
     },

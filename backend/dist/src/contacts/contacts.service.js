@@ -12,12 +12,21 @@ const _common = require("@nestjs/common");
 const _prismaservice = require("../prisma/prisma.service");
 function _ts_decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for(var i = decorators.length - 1; i >= 0; i--)if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") {
+        r = Reflect.decorate(decorators, target, key, desc);
+    } else {
+        for(var i = decorators.length - 1; i >= 0; i--){
+            if (d = decorators[i]) {
+                r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+            }
+        }
+    }
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
-function _ts_metadata(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+function _ts_metadata(metadataKey, metadataValue) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") {
+        return Reflect.metadata(metadataKey, metadataValue);
+    }
 }
 let ContactsService = class ContactsService {
     async create(tenantId, dto) {
@@ -28,7 +37,7 @@ let ContactsService = class ContactsService {
             }
         });
         if (!client) {
-            throw new _common.NotFoundException('Client not found');
+            throw new _common.NotFoundException("Client not found");
         }
         return this.prisma.contact.create({
             data: {
@@ -44,6 +53,9 @@ let ContactsService = class ContactsService {
                 ...clientId ? {
                     clientId
                 } : {}
+            },
+            include: {
+                client: true
             }
         });
     }

@@ -1,70 +1,101 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { TextInput, PasswordInput, Button, Paper, Title, Stack, Text, Anchor } from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
-import { registerSchema, type RegisterFormData } from '../schemas/auth.schemas';
-import { useAuthStore } from '../stores/authStore';
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Stack,
+  Text,
+  Anchor,
+  Group,
+} from "@mantine/core";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  createRegisterSchema,
+  type RegisterFormData,
+} from "../schemas/auth.schemas";
+import { useAuthStore } from "../stores/authStore";
+import { useTranslation } from "react-i18next";
+import { ApiError } from "../lib/apiClient";
 
 export function RegisterPage() {
-    const navigate = useNavigate();
-    const registerUser = useAuthStore((state) => state.register);
-    const [serverError, setServerError] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const registerUser = useAuthStore((state) => state.register);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<RegisterFormData>({
-        resolver: zodResolver(registerSchema),
-    });
+  const registerSchema = useMemo(() => createRegisterSchema(t), [t]);
 
-    const onSubmit = async (data: RegisterFormData) => {
-        setServerError(null);
-        try {
-            await registerUser(data);
-            navigate('/deals');
-        } catch (error) {
-            const message =
-              error instanceof Error
-                ? error.message
-                : "Cold not create account. Email might already be registered.";
-            setServerError(message);
-        }
-    };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-    return (
-        <Paper maw={400} mx="auto" mt="xl" p="xl" withBorder>
-            <Title order={2} mb="lg">Create your workspace</Title>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack>
-                    <TextInput
-                        label="Company name"
-                        placeholder="Acme Manufacturing"
-                        error={errors.tenantName?.message}
-                        {...register('tenantName')}
-                    />
-                    <TextInput
-                        label="Email"
-                        placeholder="you@company.com"
-                        error={errors.email?.message}
-                        {...register('email')}
-                    />
-                    <PasswordInput
-                        label="Password"
-                        placeholder="At least8 characters"
-                        error={errors.password?.message}
-                        {...register('password')}
-                    />
-                    {serverError && <Text c="red" size="sm">{serverError}</Text>}
-                    <Button type="submit" loading={isSubmitting} fullWidth>
-                        Create account
-                    </Button>
-                    <Text size="sm" ta="center">
-                        Already have an account? <Anchor component={Link} to="/login">Log in</Anchor>
-                    </Text>
-                </Stack>
-            </form>
-        </Paper>
-    )
+  const onSubmit = async (data: RegisterFormData) => {
+    setServerError(null);
+    try {
+      await registerUser(data);
+      navigate("/deals");
+    } catch (error) {
+      setServerError(
+        error instanceof ApiError && error.status === 429
+          ? t('errors.toManyRequests')
+          : t('auth.login.invalidCredentials'),
+      );
+    }
+  };
+
+  return (
+    <Paper maw={400} mx="auto" mt="xl" p="xl" withBorder>
+      <Title order={2} mb="lg">
+        {t("auth.register.title")}
+      </Title>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack>
+          <TextInput
+            label={t("auth.register.companyName")}
+            placeholder={t("auth.register.companyNamePlaceholder")}
+            error={errors.tenantName?.message}
+            {...register("tenantName")}
+          />
+          <Group grow align="flex-start">
+            <TextInput label={t('common.firstName')} {...register('firstName')} />
+            <TextInput label={t('common.lastName')} {...register('lastName')} />
+          </Group>
+          <TextInput
+            label="Email"
+            placeholder="you@company.com"
+            error={errors.email?.message}
+            {...register("email")}
+          />
+          <PasswordInput
+            label={t("common.password")}
+            placeholder={t('auth.register.passwordPlaceholder')}
+            error={errors.password?.message}
+            {...register("password")}
+          />
+          {serverError && (
+            <Text c="red" size="sm">
+              {serverError}
+            </Text>
+          )}
+          <Button type="submit" loading={isSubmitting} fullWidth>
+            {t('auth.register.submit')}
+          </Button>
+          <Text size="sm" ta="center">
+            {t('auth.register.haveAccount')}{" "}
+            <Anchor component={Link} to="/login">
+              {t('auth.register.loginLink')}
+            </Anchor>
+          </Text>
+        </Stack>
+      </form>
+    </Paper>
+  );
 }

@@ -5,7 +5,10 @@ import { RouterProvider } from "react-router-dom";
 import { queryClient } from "./lib/queryClient";
 import { router } from "./router";
 import { useAuthStore } from "./stores/authStore";
+import {Notifications } from '@mantine/notifications';
+import { ModalsProvider } from '@mantine/modals';
 import "@mantine/core/styles.css";
+import '@mantine/notifications/styles.css'
 
 export function App() {
   const hydrate = useAuthStore((state) => state.hydrate);
@@ -21,9 +24,12 @@ export function App() {
 
   return (
     <MantineProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <ModalsProvider>
+        <Notifications />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

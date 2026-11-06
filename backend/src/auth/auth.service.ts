@@ -91,6 +91,24 @@ export class AuthService {
         });
     }
 
+    async getProfile(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                tenant: { select: { id: true, name: true } },
+            },
+        });
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+        return user;
+    }
+
     private async issueTokens(userId: string, tenantId: string, role: string) {
         const payload: JwtPayload = { sub: userId, tenantId, role };
          const accessToken = this.jwtService.sign(payload, { expiresIn: ACCES_TOKEN_TTL });

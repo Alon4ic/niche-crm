@@ -1,13 +1,16 @@
 import { useAuthStore } from "../stores/authStore";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
-class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
+export class ApiError extends Error {
+  status: number;
+  code?: string;
+
+  constructor(status: number, message: string, code?: string) {
     super(message);
+    this.status = status;
+    this.code = code;
   }
 }
 
@@ -17,11 +20,12 @@ async function request<T>(
   isRetry = false,
 ): Promise<T> {
   const accessToken = useAuthStore.getState().accessToken;
+  const isFormData = options.body instanceof FormData;
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...options.headers,
     },
@@ -40,7 +44,11 @@ async function request<T>(
     const body = await response
       .json()
       .catch(() => ({ message: response.statusText }));
-    throw new ApiError(response.status, body.message ?? "Request failed");
+    throw new ApiError(
+      response.status,
+      body.message ?? "Request failed",
+      body.code,
+    );
   }
 
   if (response.status === 204) {
@@ -56,6 +64,8 @@ export const apiClient = {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
     }),
+  postForm: <T>(path: string, formData: FormData) =>
+    request<T>(path, { method: "POST", body: formData }),
   patch: <T>(path: string, data?: unknown) =>
     request<T>(path, {
       method: "PATCH",
