@@ -44,7 +44,7 @@ let ReturnsService = class ReturnsService {
             }
         });
         if (!deal) {
-            throw new _common.NotFoundException('Deal not found');
+            throw new _common.NotFoundException("Deal not found");
         }
         return deal;
     }
@@ -52,14 +52,14 @@ let ReturnsService = class ReturnsService {
         if (deal.stage !== _client.DealStage.WON || !deal.closedAt) {
             return {
                 ok: false,
-                code: 'RETURN_NOT_WON',
+                code: "RETURN_NOT_WON",
                 deadline: null
             };
         }
         if (windowDays <= 0) {
             return {
                 ok: false,
-                code: 'RETURN_DISABLED',
+                code: "RETURNS_DISABLED",
                 deadline: null
             };
         }
@@ -67,7 +67,7 @@ let ReturnsService = class ReturnsService {
         if (new Date() > deadline) {
             return {
                 ok: false,
-                code: 'RETURN_WINDOW_EXPIRED',
+                code: "RETURN_WINDOW_EXPIRED",
                 deadline
             };
         }
@@ -80,11 +80,11 @@ let ReturnsService = class ReturnsService {
     async computeReturnable(db, dealId) {
         const delivered = await db.stockReservation.groupBy({
             by: [
-                'stockItemId'
+                "stockItemId"
             ],
             where: {
                 dealId,
-                status: 'FULFILLED'
+                status: "FULFILLED"
             },
             _sum: {
                 quantity: true
@@ -94,7 +94,7 @@ let ReturnsService = class ReturnsService {
         const ids = delivered.map((d)=>d.stockItemId);
         const returned = await db.dealReturnItem.groupBy({
             by: [
-                'stockItemId'
+                "stockItemId"
             ],
             where: {
                 stockItemId: {
@@ -149,13 +149,13 @@ let ReturnsService = class ReturnsService {
         const window = this.evaluateWindow(deal, returnWindowDays);
         const lines = await this.computeReturnable(this.prisma, dealId);
         const anyReturnable = lines.some((l)=>new _client.Prisma.Decimal(l.returnable).greaterThan(0));
-        const blockedReason = window.code ?? (anyReturnable ? null : 'NOTHING_TO_RETURN');
+        const blockedReason = window.code ?? (anyReturnable ? null : "NOTHING_TO_RETURN");
         const returns = await this.prisma.dealReturn.findMany({
             where: {
                 dealId
             },
             orderBy: {
-                createdAt: 'desc'
+                createdAt: "desc"
             },
             include: {
                 items: {
@@ -209,7 +209,7 @@ let ReturnsService = class ReturnsService {
             if (!window.ok) {
                 throw new _common.ConflictException({
                     code: window.code,
-                    message: 'Return is not allowed for this deal'
+                    message: "Return is not allowed for this deal"
                 });
             }
             const lines = await this.computeReturnable(tx, dealId);
@@ -226,14 +226,14 @@ let ReturnsService = class ReturnsService {
                 const max = maxByItem.get(stockItemId);
                 if (!max) {
                     throw new _common.BadRequestException({
-                        code: 'RETURN_ITEM_NOT_IN_DEAL',
-                        message: 'This item was not delivered in this deal'
+                        code: "RETURN_ITEM_NOT_IN_DEAL",
+                        message: "This item was not delivered in this deal"
                     });
                 }
                 if (qty.greaterThan(max)) {
                     throw new _common.ConflictException({
-                        code: 'RETURN_EXCEEDS_DELIVERED',
-                        message: 'Quantity exceeds what can still be returned'
+                        code: "RETURN_EXCEEDS_DELIVERED",
+                        message: "Quantity exceeds what can still be returned"
                     });
                 }
             }
@@ -257,7 +257,7 @@ let ReturnsService = class ReturnsService {
             });
             const restock = new Map();
             for (const i of dto.items){
-                if (i.disposition === 'RESTOCK') {
+                if (i.disposition === "RESTOCK") {
                     const prev = restock.get(i.stockItemId) ?? new _client.Prisma.Decimal(0);
                     restock.set(i.stockItemId, prev.plus(i.quantity));
                 }

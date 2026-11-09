@@ -19,7 +19,8 @@ import {
 } from "../schemas/auth.schemas";
 import { useAuthStore } from "../stores/authStore";
 import { useTranslation } from "react-i18next";
-import { ApiError } from "../lib/apiClient";
+import { apiClient, ApiError } from "../lib/apiClient";
+import { useQuery } from "@tanstack/react-query";
 
 export function RegisterPage() {
   const { t } = useTranslation();
@@ -27,11 +28,19 @@ export function RegisterPage() {
   const registerUser = useAuthStore((state) => state.register);
   const [serverError, setServerError] = useState<string | null>(null);
 
+  const { data: regInfo } = useQuery({
+    queryKey: ["registration-info"],
+    queryFn: () =>
+      apiClient.get<{ inviteRequired: boolean }>("/auth/registration-info"),
+    staleTime: Infinity,
+  });
+
   const registerSchema = useMemo(() => createRegisterSchema(t), [t]);
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -40,14 +49,24 @@ export function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     setServerError(null);
     try {
-      await registerUser(data);
+      await registerUser({...data, inviteCode: data.inviteCode?.trim() || undefined});
       navigate("/deals");
     } catch (error) {
-      setServerError(
-        error instanceof ApiError && error.status === 429
-          ? t('errors.toManyRequests')
-          : t('auth.login.invalidCredentials'),
-      );
+     if (error instanceof ApiError) {
+       if (error.code = "INVALID_INVITE_CODE") {
+        setError("inviteCode", { message: t("errors.codes.INVALID_INVITE_CODE") });
+        return;
+       }
+       if (error.status === 409) {
+        setError("email", { message: t("auth.register.emailTaken") });
+        return;
+       }
+       if (error.status === 429) {
+        setServerError(t("errors.toManyRequests"));
+        return;
+       }
+     }
+     setServerError(t("errors.generic"));
     }
   };
 
@@ -80,6 +99,13 @@ export function RegisterPage() {
             error={errors.password?.message}
             {...register("password")}
           />
+          {regInfo?.inviteRequired && (
+            <TextInput
+              label={t("auth.register.inviteCode")}
+              error={errors.inviteCode?.message}
+              {...register("inviteCode")}
+            />
+          )}
           {serverError && (
             <Text c="red" size="sm">
               {serverError}

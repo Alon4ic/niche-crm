@@ -61,10 +61,11 @@ function _ts_metadata(metadataKey, metadataValue) {
         return Reflect.metadata(metadataKey, metadataValue);
     }
 }
-const ACCES_TOKEN_TTL = '15m';
+const ACCESS_TOKEN_TTL = '15m';
 const REFRESH_TOKEN_TTL_DAYS = 7;
 let AuthService = class AuthService {
     async register(dto) {
+        this.assertInviteCode(dto.inviteCode);
         const existing = await this.prisma.user.findUnique({
             where: {
                 email: dto.email
@@ -179,7 +180,7 @@ let AuthService = class AuthService {
             role
         };
         const accessToken = this.jwtService.sign(payload, {
-            expiresIn: ACCES_TOKEN_TTL
+            expiresIn: ACCESS_TOKEN_TTL
         });
         const refreshToken = _crypto.randomBytes(40).toString('hex');
         await this.prisma.refreshToken.create({
@@ -196,6 +197,18 @@ let AuthService = class AuthService {
     }
     hashToken(token) {
         return _crypto.createHash('sha256').update(token).digest('hex');
+    }
+    assertInviteCode(provided) {
+        const required = process.env.REGISTRATION_INVITE_CODE?.trim();
+        if (!required) return;
+        const sha = (s)=>(0, _crypto.createHash)('sha256').update(s).digest();
+        const ok = (0, _crypto.timingSafeEqual)(sha(provided ?? ''), sha(required));
+        if (!ok) {
+            throw new _common.ForbiddenException({
+                code: 'INVALID_INVITE_CODE',
+                message: 'Invalid invite code'
+            });
+        }
     }
     constructor(prisma, jwtService){
         this.prisma = prisma;

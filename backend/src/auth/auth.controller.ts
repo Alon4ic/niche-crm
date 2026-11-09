@@ -11,6 +11,11 @@ import  { Throttle } from '@nestjs/throttler';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get('registration-info')
+  registrationInfo() {
+    return { inviteRequired: !!process.env.REGISTRATION_INVITE_CODE?.trim() };
+  }
+
   @Post("register")
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   register(@Body() dto: RegisterDto) {

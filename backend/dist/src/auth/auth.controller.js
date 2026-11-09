@@ -39,6 +39,11 @@ function _ts_param(paramIndex, decorator) {
     };
 }
 let AuthController = class AuthController {
+    registrationInfo() {
+        return {
+            inviteRequired: !!process.env.REGISTRATION_INVITE_CODE?.trim()
+        };
+    }
     register(dto) {
         return this.authService.register(dto);
     }
@@ -58,6 +63,12 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
 };
+_ts_decorate([
+    (0, _common.Get)('registration-info'),
+    _ts_metadata("design:type", Function),
+    _ts_metadata("design:paramtypes", []),
+    _ts_metadata("design:returntype", void 0)
+], AuthController.prototype, "registrationInfo", null);
 _ts_decorate([
     (0, _common.Post)("register"),
     (0, _throttler.Throttle)({

@@ -6,8 +6,10 @@ import { PrismaService } from "../prisma/prisma.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { JwtPayload } from "./types/jwt-payload.interface";
+import { createHash, timingSafeEqual } from 'crypto';
+import { ForbiddenException } from '@nestjs/common';
 
-const ACCES_TOKEN_TTL = '15m';
+const ACCESS_TOKEN_TTL = '15m';
 const REFRESH_TOKEN_TTL_DAYS = 7;
 
 @Injectable()
@@ -18,6 +20,7 @@ export class AuthService {
     )  {}
 
     async register(dto: RegisterDto) {
+        this.assertInviteCode(dto.inviteCode)
         const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
         if (existing) {
             throw new ConflictException('Email already registered');
@@ -111,7 +114,7 @@ export class AuthService {
 
     private async issueTokens(userId: string, tenantId: string, role: string) {
         const payload: JwtPayload = { sub: userId, tenantId, role };
-         const accessToken = this.jwtService.sign(payload, { expiresIn: ACCES_TOKEN_TTL });
+         const accessToken = this.jwtService.sign(payload, { expiresIn: ACCESS_TOKEN_TTL });
          const refreshToken = crypto.randomBytes(40).toString('hex');
 
          await this.prisma.refreshToken.create({
@@ -127,5 +130,19 @@ export class AuthService {
 
     private hashToken(token: string): string {
         return crypto.createHash('sha256').update(token).digest('hex');
+    }
+
+    private assertInviteCode(provided?: string) {
+        const required = process.env.REGISTRATION_INVITE_CODE?.trim();
+        if (!required) return;
+
+        const sha = (s: string) => createHash('sha256').update(s).digest();
+        const ok = timingSafeEqual(sha(provided ?? ''), sha(required));
+        if (!ok) {
+            throw new ForbiddenException({
+                code: 'INVALID_INVITE_CODE',
+                message: 'Invalid invite code',
+            });
+        }
     }
 }

@@ -15,6 +15,7 @@
     "prisma:migrate": "prisma migrate dev",
     "test": "jest",
     "test:e2e": "jest --config jest.config.js --runInBand",
+    "test:unit": "jest --config jest.unit.config.js",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit"
   },

@@ -58,5 +58,12 @@ _ts_decorate([
     (0, _classvalidator.IsNotEmpty)(),
     _ts_metadata("design:type", String)
 ], RegisterDto.prototype, "tenantName", void 0);
+_ts_decorate([
+    (0, _trimtransforms.TrimToUndefined)(),
+    (0, _classvalidator.IsOptional)(),
+    (0, _classvalidator.IsString)(),
+    (0, _classvalidator.MaxLength)(100),
+    _ts_metadata("design:type", String)
+], RegisterDto.prototype, "inviteCode", void 0);
 
 //# sourceMappingURL=register.dto.js.map

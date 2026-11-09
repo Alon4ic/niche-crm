@@ -55,7 +55,9 @@
       "emailInvalid": "Enter a valid email",
       "passwordMin": "Password must be at least 8 characters",
       "companyNameRequired": "Company name is required",
-      "genericError": "Could not create account"
+      "genericError": "Could not create account",
+      "inviteCode": "Invite code",
+      "emailTaken": "This email is already registered"
     }
   },
   "clients": {
@@ -231,7 +233,8 @@
       "RETURN_EXCEEDS_DELIVERED": "The quantity is larger than what can still be returned.",
       "RETURN_ITEM_NOT_IN_DEAL": "This item was not delivered in this deal.",
       "INSUFFICIENT_STOCK": "Not enough stock is available to reserve this deal.",
-      "STOCK_BELOW_RESERVED": "Quantity on hand cannot be lower than the quantity already reserved."
+      "STOCK_BELOW_RESERVED": "Quantity on hand cannot be lower than the quantity already reserved.",
+      "INVALID_INVITE_CODE": "Invalid invite code"
     }
   },
   "returns": {

@@ -55,7 +55,9 @@
       "emailInvalid": "Gültige E-Mail eingeben",
       "passwordMin": "Passwort muss mindestens 8 Zeichen lang sein",
       "companyNameRequired": "Firmenname ist erforderlich",
-      "genericError": "Konto konnte nicht erstellt werden"
+      "genericError": "Konto konnte nicht erstellt werden",
+      "inviteCode": "Einladungscode",
+      "emailTaken": "Diese E-Mail ist bereits registriert"
     }
   },
   "clients": {
@@ -235,7 +237,8 @@
       "RETURN_EXCEEDS_DELIVERED": "Die Menge ist größer als die noch rückgebbare Menge.",
       "RETURN_ITEM_NOT_IN_DEAL": "Dieser Artikel wurde in diesem Deal nicht geliefert.",
       "INSUFFICIENT_STOCK": "Es ist nicht genug Bestand vorhanden, um diesen Deal zu reservieren.",
-      "STOCK_BELOW_RESERVED": "Der Bestand darf nicht unter der bereits reservierten Menge liegen."
+      "STOCK_BELOW_RESERVED": "Der Bestand darf nicht unter der bereits reservierten Menge liegen.",
+      "INVALID_INVITE_CODE": "Ungültiger Einladungscode"
     }
   },
   "returns": {

@@ -15,7 +15,8 @@ export const createRegisterSchema = (t: TFunction) =>
     password: z.string().min(8, t('auth.register.passwordMin')),
     tenantName: z.string().min(1, t('auth.register.companyNameRequired')),
     firstName: z.string().optional(),
-    lastName: z.string().optional(),  
+    lastName: z.string().optional(), 
+    inviteCode: z.string().optional(), 
 });
 
 export type RegisterFormData = z.infer<ReturnType<typeof createRegisterSchema>>

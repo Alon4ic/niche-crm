@@ -55,7 +55,9 @@
       "emailInvalid": "Inserisci un'email valida",
       "passwordMin": "La password deve contenere almeno 8 caratteri",
       "companyNameRequired": "Il nome azienda è obbligatorio",
-      "genericError": "Impossibile creare l'account"
+      "genericError": "Impossibile creare l'account",
+      "inviteCode": "Codice di invito",
+      "emailTaken": "Questa email è già registrata"
     }
   },
   "clients": {
@@ -234,7 +236,8 @@
       "RETURN_EXCEEDS_DELIVERED": "La quantità supera quella ancora restituibile.",
       "RETURN_ITEM_NOT_IN_DEAL": "Questo articolo non è stato consegnato in questa trattativa.",
       "INSUFFICIENT_STOCK": "Non ci sono scorte sufficienti per prenotare questa trattativa.",
-      "STOCK_BELOW_RESERVED": "La giacenza non può essere inferiore alla quantità già prenotata."
+      "STOCK_BELOW_RESERVED": "La giacenza non può essere inferiore alla quantità già prenotata.",
+      "INVALID_INVITE_CODE": "Codice di invito non valido"
     }
   },
   "returns": {

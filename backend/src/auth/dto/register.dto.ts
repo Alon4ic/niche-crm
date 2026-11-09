@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsOptional, IsNotEmpty, MaxLength } from 'class-validator';
 import { Trim, TrimToUndefined, NormalizeEmail } from '../../common/transforms/trim.transforms';
 
 export class RegisterDto {
@@ -24,4 +24,10 @@ export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     tenantName!: string;
+
+    @TrimToUndefined()
+    @IsOptional()
+    @IsString()
+    @MaxLength(100)
+    inviteCode?: string;
 }

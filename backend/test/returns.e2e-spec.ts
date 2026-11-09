@@ -114,7 +114,7 @@ describe('Возвраты', () => {
     await patchSettings(app, token, { returnWindowDays: 0 }).expect(200);
     const denied = await postReturn(app, token, dealId, returnBody(stock, 1, 'RESTOCK'));
     expect(denied.status).toBe(409);
-    expect(denied.body.code).toBe("RETURN_DISABLED");
+    expect(denied.body.code).toBe("RETURNS_DISABLED");
 
     await patchSettings(app, token, { returnWindowDays: 14 }).expect(200);
     expect((await postReturn(app, token, dealId, returnBody(stock, 1, 'RESTOCK'))).status).toBe(201);
