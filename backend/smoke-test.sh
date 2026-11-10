@@ -15,6 +15,9 @@ PASS=0
 FAIL=0
 STATUS=""
 BODY=""
+MAIN_JAR=$(mktemp)
+JAR="$MAIN_JAR"
+trap 'rm -f "$MAIN_JAR" "$MAIN_JAR.old" "$MAIN_JAR.before"' EXIT
 
 # ---------- вспомогательные функции ----------
 
@@ -26,7 +29,7 @@ die() { echo "⛔ $1"; exit 2; }
 # call МЕТОД ПУТЬ [ТОКЕН] [JSON] — результат в STATUS и BODY
 call() {
   local method=$1 path=$2 token=${3:-} data=${4:-}
-  local args=(-s -X "$method" "$BASE$path" -w $'\n%{http_code}')
+  local args=(-s -X "$method" "$BASE$path" -w $'\n%{http_code}' -b "$JAR" -c "$JAR")
   if [ -n "$token" ]; then args+=(-H "Authorization: Bearer $token"); fi
   if [ -n "$data" ]; then args+=(-H "Content-Type: application/json" -d "$data"); fi
   local out
@@ -125,7 +128,7 @@ main() {
   call POST /auth/register "" "{\"email\":\"  Smoke.$RUN.Owner@Example.COM \",\"password\":\"password123\",\"tenantName\":\"Smoke A $RUN\",\"firstName\":\"  Anna  \",\"lastName\":\"   \"}"
   expect "Регистрация компании A" 201
   OWNER_TOKEN=$(jget '.accessToken // empty')
-  OWNER_REFRESH=$(jget '.refreshToken // empty')
+  expect_eq "Refresh-токена нет в теле ответа" "" "$(jget '.refreshToken // empty')"
   if [ -z "$OWNER_TOKEN" ]; then die "Нет токена после регистрации (лимит регистраций или ошибка backend): ${BODY:0:300}"; fi
   call GET /auth/me "$OWNER_TOKEN"
   expect "/auth/me отдаёт профиль" 200
@@ -136,15 +139,29 @@ main() {
   expect_eq "Роль создателя компании OWNER" "OWNER" "$(jget .role)"
 
   section "2. Обновление и выход"
-  call POST /auth/refresh "" "{\"refreshToken\":\"$OWNER_REFRESH\"}"
-  expect_any "Refresh выдаёт новую пару токенов" "200 201"
-  NEW_REFRESH=$(jget '.refreshToken // empty')
-  call POST /auth/refresh "" "{\"refreshToken\":\"$OWNER_REFRESH\"}"
+  cp "$MAIN_JAR" "$MAIN_JAR.old"                 # cookie до ротации
+
+  call POST /auth/refresh ""
+  expect_any "Refresh по cookie выдаёт новый access-токен" "200 201"
+  expect_eq "В ответе есть access-токен" "yes" "$([ -n "$(jget '.accessToken // empty')" ] && echo yes || echo no)"
+  expect_eq "Refresh-токена нет в теле ответа refresh" "" "$(jget '.refreshToken // empty')"
+
+  JAR="$MAIN_JAR.old"                            # подставляем cookie до ротации
+  call POST /auth/refresh ""
   expect "Старый refresh после ротации не работает" 401
-  call POST /auth/logout "" "{\"refreshToken\":\"$NEW_REFRESH\"}"
+  JAR="$MAIN_JAR"
+
+  cp "$MAIN_JAR" "$MAIN_JAR.before"              # cookie до logout
+  call POST /auth/logout ""
   expect_any "Logout" "200 201 204"
-  call POST /auth/refresh "" "{\"refreshToken\":\"$NEW_REFRESH\"}"
-  expect "Refresh после logout не работает" 401
+
+  JAR="$MAIN_JAR.before"                         # токен, который logout должен был отозвать
+  call POST /auth/refresh ""
+  expect "Refresh отозванным токеном не работает" 401
+  JAR="$MAIN_JAR"
+
+  call POST /auth/refresh ""
+  expect "Refresh без cookie не работает" 401
 
   section "3. Сотрудники и роли"
   ADMIN_EMAIL="smoke.$RUN.admin@example.com"

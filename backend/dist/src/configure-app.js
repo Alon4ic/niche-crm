@@ -11,6 +11,7 @@ Object.defineProperty(exports, "configureApp", {
 const _common = require("@nestjs/common");
 const _helmet = /*#__PURE__*/ _interop_require_default(require("helmet"));
 const _prismaexceptionfilter = require("./common/filters/prisma-exception.filter");
+const _cookieparser = /*#__PURE__*/ _interop_require_default(require("cookie-parser"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
@@ -18,9 +19,11 @@ function _interop_require_default(obj) {
 }
 function configureApp(app) {
     app.use((0, _helmet.default)());
+    app.use((0, _cookieparser.default)());
     const corsOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://localhost:5174").split(",").map((origin)=>origin.trim()).filter(Boolean);
     app.enableCors({
-        origin: corsOrigins
+        origin: corsOrigins,
+        credentials: true
     });
     app.useGlobalPipes(new _common.ValidationPipe({
         whitelist: true,

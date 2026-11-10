@@ -3,7 +3,6 @@ import { apiClient } from "../lib/apiClient";
 
 interface AuthResponse {
     accessToken: string;
-    refreshToken: string;
 }
 
 interface RegisterPayload {
@@ -25,68 +24,62 @@ interface AuthState {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-const REFRESH_KEY = "refreshToken";
-
-const saveRefresh = (token: string) => sessionStorage.setItem(REFRESH_KEY, token);
 
 let refreshPromise: Promise<boolean> | null = null;
+
+const withTablock = <T,>(fn: () => Promise<T>): Promise<T> =>
+    "locks" in navigator ? navigator.locks.request("crm-refresh", fn) : fn();
 
 export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
 
     login: async (email, password) => {
         const data = await apiClient.post<AuthResponse>("/auth/login", { email, password });
-        saveRefresh(data.refreshToken);
         set({ accessToken: data.accessToken });
     },
 
     register: async (payload) => {
         const data = await apiClient.post<AuthResponse>("/auth/register", payload);
-        saveRefresh(data.refreshToken);
         set({ accessToken: data.accessToken });
     },
 
     logout: async () => {
-        const refreshToken = sessionStorage.getItem(REFRESH_KEY);
-        sessionStorage.removeItem(REFRESH_KEY);
         set({ accessToken: null });
-        if (refreshToken) {
-            fetch(`${API_BASE_URL}/auth/logout`, {
+        try {
+            await fetch(`${API_BASE_URL}/auth/logout`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refreshToken }),
-            }).catch(() => {});
+                credentials: "include",
+            })
+        } catch {
+
         }
     },
 
-    refreshAccessToken: () => {
-        if (!refreshPromise) {
-            refreshPromise = (async () => {
-                const refreshToken = sessionStorage.getItem(REFRESH_KEY);
-                if (!refreshToken) return false;
-                try {
-                    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ refreshToken }),
-                    });
-                    if (!response.ok) return false;
-                    const data: AuthResponse = await response.json();
-                    saveRefresh(data.refreshToken);
-                    set({ accessToken: data.accessToken });
-                    return true;
-                } catch {
-                    return false;
-                }
-            })().finally(() => {
-                refreshPromise = null;
-            });
-        }
-        return refreshPromise;
-    },
-    hydrate: async () => {
-        await get().refreshAccessToken();
-    },
+   refreshAccessToken: () => {
+    if (!refreshPromise) {
+        refreshPromise = withTablock(async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+                if (!response.ok) return false;
+                const data: AuthResponse = await response.json();
+                set({ accessToken: data.accessToken });
+                return true;
+            } catch {
+                return false;
+            }
+        }).finally(() => {
+            refreshPromise = null;
+        });
+    }
+    return refreshPromise;
+   },
+
+   hydrate: async () => {
+    await get().refreshAccessToken();
+   },
 }));
 
 

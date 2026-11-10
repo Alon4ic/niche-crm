@@ -38,23 +38,57 @@ function _ts_param(paramIndex, decorator) {
         decorator(target, key, paramIndex);
     };
 }
+const REFRESH_COOKIE = "refresh_token";
+const REFRESH_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const cookieOptions = ()=>({
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.COOKIE_SAMESITE ?? "lax",
+        path: "/auth"
+    });
+const setRefreshCookie = (res, token)=>res.cookie(REFRESH_COOKIE, token, {
+        ...cookieOptions(),
+        maxAge: REFRESH_MAX_AGE_MS
+    });
+const clearRefreshCookie = (res)=>res.clearCookie(REFRESH_COOKIE, cookieOptions());
 let AuthController = class AuthController {
     registrationInfo() {
         return {
             inviteRequired: !!process.env.REGISTRATION_INVITE_CODE?.trim()
         };
     }
-    register(dto) {
-        return this.authService.register(dto);
+    async register(dto, res) {
+        const { accessToken, refreshToken } = await this.authService.register(dto);
+        setRefreshCookie(res, refreshToken);
+        return {
+            accessToken
+        };
     }
-    login(dto) {
-        return this.authService.login(dto);
+    async login(dto, res) {
+        const { accessToken, refreshToken } = await this.authService.login(dto);
+        setRefreshCookie(res, refreshToken);
+        return {
+            accessToken
+        };
     }
-    refresh(refreshToken) {
-        return this.authService.refresh(refreshToken);
+    async refresh(req, res) {
+        const token = req.cookies?.[REFRESH_COOKIE];
+        if (!token) throw new _common.UnauthorizedException("No refresh token");
+        try {
+            const { accessToken, refreshToken } = await this.authService.refresh(token);
+            setRefreshCookie(res, refreshToken);
+            return {
+                accessToken
+            };
+        } catch (e) {
+            clearRefreshCookie(res);
+            throw e;
+        }
     }
-    logout(refreshToken) {
-        return this.authService.logout(refreshToken);
+    async logout(req, res) {
+        const token = req.cookies?.[REFRESH_COOKIE];
+        if (token) await this.authService.logout(token);
+        clearRefreshCookie(res);
     }
     me(user) {
         return this.authService.getProfile(user.sub);
@@ -78,11 +112,15 @@ _ts_decorate([
         }
     }),
     _ts_param(0, (0, _common.Body)()),
+    _ts_param(1, (0, _common.Res)({
+        passthrough: true
+    })),
     _ts_metadata("design:type", Function),
     _ts_metadata("design:paramtypes", [
-        typeof _registerdto.RegisterDto === "undefined" ? Object : _registerdto.RegisterDto
+        typeof _registerdto.RegisterDto === "undefined" ? Object : _registerdto.RegisterDto,
+        typeof Response === "undefined" ? Object : Response
     ]),
-    _ts_metadata("design:returntype", void 0)
+    _ts_metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 _ts_decorate([
     (0, _common.Post)("login"),
@@ -93,29 +131,41 @@ _ts_decorate([
         }
     }),
     _ts_param(0, (0, _common.Body)()),
+    _ts_param(1, (0, _common.Res)({
+        passthrough: true
+    })),
     _ts_metadata("design:type", Function),
     _ts_metadata("design:paramtypes", [
-        typeof _logindto.LoginDto === "undefined" ? Object : _logindto.LoginDto
+        typeof _logindto.LoginDto === "undefined" ? Object : _logindto.LoginDto,
+        typeof Response === "undefined" ? Object : Response
     ]),
-    _ts_metadata("design:returntype", void 0)
+    _ts_metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 _ts_decorate([
     (0, _common.Post)("refresh"),
-    _ts_param(0, (0, _common.Body)("refreshToken")),
+    _ts_param(0, (0, _common.Req)()),
+    _ts_param(1, (0, _common.Res)({
+        passthrough: true
+    })),
     _ts_metadata("design:type", Function),
     _ts_metadata("design:paramtypes", [
-        String
+        typeof Request === "undefined" ? Object : Request,
+        typeof Response === "undefined" ? Object : Response
     ]),
-    _ts_metadata("design:returntype", void 0)
+    _ts_metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
 _ts_decorate([
     (0, _common.Post)("logout"),
-    _ts_param(0, (0, _common.Body)("refreshToken")),
+    _ts_param(0, (0, _common.Req)()),
+    _ts_param(1, (0, _common.Res)({
+        passthrough: true
+    })),
     _ts_metadata("design:type", Function),
     _ts_metadata("design:paramtypes", [
-        String
+        typeof Request === "undefined" ? Object : Request,
+        typeof Response === "undefined" ? Object : Response
     ]),
-    _ts_metadata("design:returntype", void 0)
+    _ts_metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 _ts_decorate([
     (0, _common.UseGuards)(_jwtauthguard.JwtAuthGuard),

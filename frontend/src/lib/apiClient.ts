@@ -1,5 +1,7 @@
 import { useAuthStore } from "../stores/authStore";
 
+const AUTH_PATHS = ["/auth/login", "/auth/register", "/auth/refresh", "/auth/logout"];
+
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
@@ -24,6 +26,7 @@ async function request<T>(
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
@@ -31,7 +34,7 @@ async function request<T>(
     },
   });
 
-  if (response.status === 401 && !isRetry) {
+  if (response.status === 401 && !isRetry && !AUTH_PATHS.includes(path)) {
     const refreshed = await useAuthStore.getState().refreshAccessToken();
     if (refreshed) {
       return request<T>(path, options, true);
