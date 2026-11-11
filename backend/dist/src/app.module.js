@@ -22,6 +22,7 @@ const _settingsmodule = require("./settings/settings.module");
 const _core = require("@nestjs/core");
 const _throttler = require("@nestjs/throttler");
 const _envvalidation = require("./config/env.validation");
+const _healthcontroller = require("./health/health.controller");
 function _ts_decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") {
@@ -63,6 +64,9 @@ AppModule = _ts_decorate([
             _usersmodule.UsersModule,
             _importsmodule.ImportsModule,
             _settingsmodule.SettingsModule
+        ],
+        controllers: [
+            _healthcontroller.HealthController
         ],
         providers: [
             {

@@ -18,6 +18,10 @@ function _interop_require_default(obj) {
     };
 }
 function configureApp(app) {
+    const proxyHops = Number(process.env.TRUST_PROXY ?? 0);
+    if (proxyHops > 0) {
+        app.getHttpAdapter().getInstance().set("trust proxy", proxyHops);
+    }
     app.use((0, _helmet.default)());
     app.use((0, _cookieparser.default)());
     const corsOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://localhost:5174").split(",").map((origin)=>origin.trim()).filter(Boolean);

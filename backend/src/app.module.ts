@@ -12,6 +12,7 @@ import { SettingsModule } from './settings/settings.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { validateEnv } from './config/env.validation';
+import { HealthController } from "./health/health.controller"
 
 
 @Module({
@@ -34,6 +35,7 @@ import { validateEnv } from './config/env.validation';
     ImportsModule,
     SettingsModule,
   ],
+  controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

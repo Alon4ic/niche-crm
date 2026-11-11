@@ -6,7 +6,9 @@ const _core = require("@nestjs/core");
 const _common = require("@nestjs/common");
 const _appmodule = require("./app.module");
 const _configureapp = require("./configure-app");
+const _assertenv = require("./config/assert-env");
 async function bootstrap() {
+    (0, _assertenv.assertEnv)();
     const app = await _core.NestFactory.create(_appmodule.AppModule);
     (0, _configureapp.configureApp)(app);
     const port = process.env.PORT || 3000;

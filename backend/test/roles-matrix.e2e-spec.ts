@@ -32,6 +32,7 @@ const DECISIONS: Record<string, Decision> = {
   "POST /auth/logout": "PUBLIC",
   "GET /auth/me": "AUTH",
   "GET /auth/registration-info": "PUBLIC",
+  "GET /health": "PUBLIC",
 
   "GET /users": OA,
   "POST /users": ["OWNER"],
