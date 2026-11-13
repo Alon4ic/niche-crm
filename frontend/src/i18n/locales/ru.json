@@ -16,6 +16,7 @@
     "notes": "Заметки",
     "firstName": "Имя",
     "lastName": "Фамилия",
+    "toggleTheme": "Сменить тему",
     "confirmDelete": {
       "title": "Вы уверены?",
       "message": "Это действие нельзя отменить.",

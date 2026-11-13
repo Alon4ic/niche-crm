@@ -16,6 +16,7 @@
     "notes": "Нотатки",
     "firstName": "Ім'я",
     "lastName": "Прізвище",
+    "toggleTheme": "Змінити тему",
     "confirmDelete": {
       "title": "Ви впевнені?",
       "message": "Цю дію не можна скасувати.",

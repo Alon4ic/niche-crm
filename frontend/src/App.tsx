@@ -7,6 +7,7 @@ import { router } from "./router";
 import { useAuthStore } from "./stores/authStore";
 import {Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
+import { theme } from "./theme";
 import "@mantine/core/styles.css";
 import '@mantine/notifications/styles.css'
 
@@ -23,7 +24,7 @@ export function App() {
   }
 
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme} defaultColorScheme="auto">
       <ModalsProvider>
         <Notifications />
         <QueryClientProvider client={queryClient}>

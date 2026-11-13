@@ -16,6 +16,7 @@
     "notes": "Note",
     "firstName": "Nome",
     "lastName": "Cognome",
+    "toggleTheme": "Cambia tema",
     "confirmDelete": {
       "title": "Sei sicuro?",
       "message": "Questa azione non può essere annullata.",

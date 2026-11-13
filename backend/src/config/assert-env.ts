@@ -1,18 +1,11 @@
 import { Logger } from "@nestjs/common";
 
 export function assertEnv() {
-    const log = new Logger("Env");
     if (process.env.NODE_ENV !== "production") return;
-
-    const required = ["DATABASE_URL", "JWT_ACCESS_SECRET", "CORS_ORIGINS"];
-    const missing = required.filter((k) => !process.env[k]?.trim());
-    if (missing.length) {
-        throw new Error(`Missing required env variables: ${missing.join(", ")}`);
-    }
-    if (process.env.JWT_ACCESS_SECRET!.length < 32) {
-        throw new Error("JWT_ACCESS_SECRET must be at least 32 characters");
-    }
-    if (!process.env.DATABASE_URL!.includes("connection_limit")) {
+        
+    const log = new Logger("Env");
+    
+    if (!process.env.DATABASE_URL?.includes("connection_limit")) {
         log.warn("DATABASE_URL has no connection_limit: Prisma pool size will depend on CPU count");
     }
     if (!process.env.TRUST_PROXY) {

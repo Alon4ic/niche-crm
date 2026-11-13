@@ -19,6 +19,9 @@ function validateEnv(config) {
     } else if (config.NODE_ENV === 'production' && secret.includes('change-in-production')) {
         errors.push('JWT_ACCESS_SECRET still has the placeholder value');
     }
+    if (config.NODE_ENV === "production" && !String(config.CORS_ORIGINS ?? "").trim()) {
+        errors.push("CORS_ORIGINS is required in production");
+    }
     if (errors.length > 0) {
         throw new Error(`Invvalid environment configuration:\n - ${errors.join('\n - ')}`);
     }

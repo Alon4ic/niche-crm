@@ -16,6 +16,7 @@
     "notes": "Notizen",
     "firstName": "Vorname",
     "lastName": "Nachname",
+    "toggleTheme": "Design wechseln",
     "confirmDelete": {
       "title": "Sind Sie sicher?",
       "message": "Diese Aktion kann nicht rückgängig gemacht werden.",

@@ -216,4 +216,10 @@ describe('Матрица ролей и маршрутов', () => {
     }
     expect(failed).toEqual([]);
   });
+
+  it("в таблице решений нет записей без маршрута", () => {
+    const existing = new Set(routes.map((r) => r.key));
+    const stale = Object.keys(DECISIONS).filter((k) => !existing.has(k));
+    expect(stale).toEqual([]);
+  });
 });

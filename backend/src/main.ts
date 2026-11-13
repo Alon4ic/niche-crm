@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { Logger } from "@nestjs/common";
 import { AppModule } from "./app.module";
 import { configureApp } from "./configure-app";
-import {assertEnv} from "./config/assert-env"
+import { assertEnv } from "./config/assert-env";
 
 async function bootstrap() {
   assertEnv();

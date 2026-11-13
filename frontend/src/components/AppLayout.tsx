@@ -17,6 +17,8 @@ import { useAuthStore } from "../stores/authStore";
 import { useCurrentRole } from "../hooks/useCurrentRole";
 import { useMe } from "../api/auth";
 import { SUPPORTED_LANGUAGES } from "../i18n";
+import { APP_NAME } from "../config/brand";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface NavItem {
   to: string;
@@ -95,87 +97,97 @@ export function AppLayout() {
         ));
 
         return (
-            <AppShell header={{ height: 60 }} padding="md">
-                <AppShell.Header>
-                    <Group h="100%" px="md" justify="space-between" wrap="nowrap">
-                        <Group gap="md" wrap="nowrap">
-                            <Burger
-                                opened={drawerOpened}
-                                onClick={toggle}
-                                hiddenFrom="md"
-                                size="sm"
-                                aria-label={t('header.menu')}
-                            />
-                            <Text
-                                component={Link}
-                                to="/deals"
-                                fw={800}
-                                size="xl"
-                                c="blue"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                CRM
+          <AppShell header={{ height: 60 }} padding="md">
+            <AppShell.Header>
+              <Group h="100%" px="md" justify="space-between" wrap="nowrap">
+                <Group gap="md" wrap="nowrap">
+                  <Burger
+                    opened={drawerOpened}
+                    onClick={toggle}
+                    hiddenFrom="md"
+                    size="sm"
+                    aria-label={t("header.menu")}
+                  />
+                  <Text
+                    component={Link}
+                    to="/deals"
+                    fw={800}
+                    size="xl"
+                    c="blue"
+                    style={{ textDecoration: "none" }}
+                  >
+                    {APP_NAME}
+                  </Text>
+                  <Group gap={4} visibleFrom="md" wrap="nowrap">
+                    {renderNavButtons(false)}
+                  </Group>
+                </Group>
+
+                <Group gap="xs" wrap="nowrap">
+                  <ThemeToggle />
+                  <Menu position="bottom-end" width={240}>
+                    <Menu.Target>
+                      <UnstyledButton>
+                        <Group gap="xs" wrap="nowrap">
+                          <Avatar color="blue" radius="xl">
+                            {initials}
+                          </Avatar>
+                          <Stack gap={0} visibleFrom="sm">
+                            <Text size="sm" c="dimmed" fw={500} lh={1.3}>
+                              {displayName}
                             </Text>
-                            <Group gap={4} visibleFrom="md" wrap="nowrap">
-                                {renderNavButtons(false)}
-                            </Group>
+                            <Text size="xs" c="dark" lh={1.3}>
+                              {roleLabel}
+                            </Text>
+                          </Stack>
                         </Group>
+                      </UnstyledButton>
+                    </Menu.Target>
 
-                        <Menu position="bottom-end" width={240}>
-                            <Menu.Target>
-                                <UnstyledButton>
-                                    <Group gap="xs" wrap="nowrap">
-                                        <Avatar color="blue" radius="xl">
-                                            {initials}
-                                        </Avatar>
-                                        <Stack gap={0} visibleFrom="sm">
-                                            <Text size="sm" fw={500} lh={1.3}>
-                                                {displayName}
-                                            </Text>
-                                            <Text size="xs" c="dark" lh={1.3}>
-                                                {roleLabel}
-                                            </Text>
-                                        </Stack>
-                                    </Group>
-                                </UnstyledButton>
-                            </Menu.Target>
+                    <Menu.Dropdown>
+                      {me?.tenant && (
+                        <>
+                          <Menu.Label>{me.tenant.name}</Menu.Label>
+                          <Text size="xs" c="dimmed" px="sm" pb="xs">
+                            {me.email}
+                          </Text>
+                          <Menu.Divider />
+                        </>
+                      )}
+                      <Menu.Label>{t("header.language")}</Menu.Label>
+                      {SUPPORTED_LANGUAGES.map((code) => (
+                        <Menu.Item
+                          key={code}
+                          onClick={() => i18n.changeLanguage(code)}
+                          rightSection={
+                            i18n.resolvedLanguage === code ? "✓" : null
+                          }
+                        >
+                          {LANGUAGE_NAMES[code]}
+                        </Menu.Item>
+                      ))}
+                      <Menu.Divider />
+                      <Menu.Item color="red" onClick={handleLogout}>
+                        {t("common.logout")}
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </Group>
+              </Group>
+            </AppShell.Header>
 
-                            <Menu.Dropdown>
-                                {me?.tenant && (
-                                    <>
-                                        <Menu.Label>{me.tenant.name}</Menu.Label>
-                                        <Text size="xs" c="dimmed" px="sm" pb="xs">
-                                            {me.email}
-                                        </Text>
-                                        <Menu.Divider />
-                                    </>
-                                )}
-                                <Menu.Label>{t('header.language')}</Menu.Label>
-                                {SUPPORTED_LANGUAGES.map((code) => (
-                                    <Menu.Item
-                                        key={code}
-                                        onClick={() => i18n.changeLanguage(code)}
-                                        rightSection={i18n.resolvedLanguage === code ? '✓' : null}
-                                    >
-                                        {LANGUAGE_NAMES[code]}
-                                    </Menu.Item>
-                                ))}
-                                <Menu.Divider />
-                                <Menu.Item color="red" onClick={handleLogout}>
-                                    {t('common.logout')}
-                                </Menu.Item>
-                            </Menu.Dropdown>
-                        </Menu>
-                    </Group>
-                </AppShell.Header>
+            <Drawer
+              opened={drawerOpened}
+              onClose={close}
+              title={APP_NAME}
+              size="xs"
+            >
+              <Stack gap="xs">{renderNavButtons(true, close)}</Stack>
+            </Drawer>
 
-                <Drawer opened={drawerOpened} onClose={close} title="CRM" size="xs">
-                    <Stack gap="xs">{renderNavButtons(true, close)}</Stack>
-                </Drawer>
-
-                <AppShell.Main>
-                    <Outlet />
-                </AppShell.Main>
-            </AppShell>
-        )
+            <AppShell.Main>
+              <Outlet />
+            </AppShell.Main>
+          </AppShell>
+        );
 }
