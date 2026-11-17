@@ -70,6 +70,15 @@ export class StockItemsService {
 
     async remove(tenantId: string, id: string) {
         await this.findOne(tenantId, id);
+        const usedInDeals = await this.prisma.dealBomItem.count({
+            where: { stockItemId: id },
+        });
+        if (usedInDeals > 0) {
+            throw new ConflictException({
+                code: 'STOCK_ITEM_IN_USE',
+                message: 'Stock item is used in a deal and cannot be deleted',
+            });
+        }
         try {
             await this.prisma.stockItem.delete({ where: { id } });
         } catch (e) {

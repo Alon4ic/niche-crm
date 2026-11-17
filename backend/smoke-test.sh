@@ -4,13 +4,23 @@
 #
 #   bash smoke-test.sh              бэкенд на http://localhost:3000
 #   BASE=http://host:3000 bash smoke-test.sh
+#   BASE=https://api.usecostsmith.com INVITE_CODE='код' bash smoke-test.sh
+#                                   против сервера с закрытой регистрацией
+#                                   (код приглашения не пишите в историю: поставьте пробел перед командой)
 #   bash smoke-test.sh --throttle   дополнительно проверит лимит попыток входа
 #                                   (после него вход с вашего IP заблокирован примерно на минуту)
 #
 # Нужны curl и jq. Скрипт создаёт в базе тестовые компании "Smoke A/B <время>".
-# Лимиты: регистрация 5 в минуту. Один прогон тратит 2, не запускайте чаще двух раз в минуту.
+# Лимиты: регистрация 5 в минуту. Один прогон тратит 2 (3 с INVITE_CODE), не запускайте чаще двух раз в минуту.
+# ВНИМАНИЕ: тест создаёт настоящие компании "Smoke A/B <время>" в той базе, на которую смотрит BASE.
 
 BASE=${BASE:-http://localhost:3000}
+INVITE_CODE=${INVITE_CODE:-}
+# Дополнительное поле JSON для регистрации: пусто, если код не задан
+INVITE_FIELD=""
+if [ -n "$INVITE_CODE" ]; then
+  INVITE_FIELD=",\"inviteCode\":$(printf '%s' "$INVITE_CODE" | jq -R .)"
+fi
 PASS=0
 FAIL=0
 STATUS=""
@@ -125,7 +135,12 @@ main() {
 
   section "1. Регистрация, профиль, нормализация данных"
   OWNER_EMAIL="smoke.$RUN.owner@example.com"
-  call POST /auth/register "" "{\"email\":\"  Smoke.$RUN.Owner@Example.COM \",\"password\":\"password123\",\"tenantName\":\"Smoke A $RUN\",\"firstName\":\"  Anna  \",\"lastName\":\"   \"}"
+  if [ -n "$INVITE_CODE" ]; then
+    call POST /auth/register "" "{\"email\":\"smoke.$RUN.wrongcode@example.com\",\"password\":\"password123\",\"tenantName\":\"Smoke W $RUN\",\"inviteCode\":\"definitely-wrong-code\"}"
+    expect "Регистрация с неверным кодом приглашения отклоняется" 403
+    expect_eq "Код ошибки INVALID_INVITE_CODE" "INVALID_INVITE_CODE" "$(jget '.code // empty')"
+  fi
+  call POST /auth/register "" "{\"email\":\"  Smoke.$RUN.Owner@Example.COM \",\"password\":\"password123\",\"tenantName\":\"Smoke A $RUN\",\"firstName\":\"  Anna  \",\"lastName\":\"   \"$INVITE_FIELD}"
   expect "Регистрация компании A" 201
   OWNER_TOKEN=$(jget '.accessToken // empty')
   expect_eq "Refresh-токена нет в теле ответа" "" "$(jget '.refreshToken // empty')"
@@ -237,7 +252,7 @@ main() {
   expect "Контакт нельзя перепривязать к другому клиенту" 400
 
   section "5. Изоляция между компаниями"
-  call POST /auth/register "" "{\"email\":\"smoke.$RUN.b@example.com\",\"password\":\"password123\",\"tenantName\":\"Smoke B $RUN\"}"
+  call POST /auth/register "" "{\"email\":\"smoke.$RUN.b@example.com\",\"password\":\"password123\",\"tenantName\":\"Smoke B $RUN\"$INVITE_FIELD}"
   expect "Регистрация компании B" 201
   B_TOKEN=$(jget '.accessToken // empty')
   if [ -z "$B_TOKEN" ]; then die "Нет токена компании B"; fi

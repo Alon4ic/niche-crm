@@ -1,1 +1,1 @@
-export const APP_NAME = "CRM";
+export const APP_NAME = "Costsmith";
