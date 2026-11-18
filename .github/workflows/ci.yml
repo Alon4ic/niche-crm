@@ -1,22 +1,32 @@
 name: CI
- 
+
 on:
   push:
     branches: [main]
   pull_request:
- 
+
+# Минимальные права: CI только читает код
+permissions:
+  contents: read
+
+# Новый пуш в ту же ветку отменяет ещё идущий старый прогон
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend:
-    name: "Backend: типы и e2e-тесты"
+    name: "Backend: типы и тесты"
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
- 
-    # Отдельный Postgres только для этого прогона
+
+    # Отдельный Postgres только для этого прогона.
+    # Версия та же, что в Neon (боевая база), чтобы поведение совпадало.
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_USER: crm_user
           POSTGRES_PASSWORD: ci_password
@@ -28,7 +38,7 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
- 
+
     # Переменные окружения для тестов. Если env.validation.ts требует другие,
     # добавьте их сюда по образцу вашего .env.test.
     env:
@@ -36,34 +46,45 @@ jobs:
       DATABASE_URL: postgresql://crm_user:ci_password@localhost:5432/niche_crm_test?schema=public&connection_limit=20&pool_timeout=20
       JWT_ACCESS_SECRET: ci-test-secret-ci-test-secret-ci-test-1234
       CORS_ORIGINS: http://localhost:5173
- 
+
     steps:
       - uses: actions/checkout@v4
- 
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
- 
+
       - name: Установка зависимостей
         run: npm ci
- 
+
       - name: Генерация Prisma Client
         run: npx prisma generate
- 
+
       - name: Проверка типов приложения
         run: npx tsc --noEmit -p tsconfig.json
- 
+
       - name: Проверка типов тестов
         run: npx tsc --noEmit -p test/tsconfig.json
- 
-      - name: E2E-тесты
-        run: npm run test:e2e
 
       - name: Модульные тесты
         run: npm run test:unit
- 
+
+      - name: E2E-тесты
+        run: npm run test:e2e
+
+  # Проверяет, что Docker-образ, который уходит на Render, собирается.
+  # Ничего не публикует.
+  docker:
+    name: "Backend: сборка Docker-образа"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Сборка образа
+        run: docker build ./backend
+
   frontend:
     name: "Frontend: типы и сборка"
     runs-on: ubuntu-latest
@@ -72,18 +93,17 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
- 
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
- 
+
       - name: Установка зависимостей
         run: npm ci
- 
+
       # Обычно "build" в Vite-проекте уже включает проверку типов (tsc -b && vite build).
       # Если у вас иначе, замените на npx tsc --noEmit
       - name: Сборка и проверка типов
         run: npm run build
- 
