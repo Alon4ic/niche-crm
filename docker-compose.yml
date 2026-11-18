@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: niche_crm_postgres
     restart: unless-stopped
     environment:
@@ -8,9 +8,9 @@ services:
       POSTGRES_PASSWORD: crm_password
       POSTGRES_DB: niche_crm
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U crm_user -d niche_crm"]
       interval: 5s
@@ -22,7 +22,7 @@ services:
     container_name: niche_crm_redis
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
